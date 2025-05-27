@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     {% block additional_css %}{% endblock %}
 </head>
 <body>
 <nav>
     <ul>
-        <li><a href="{{ url_for('index') }}">Podgląd na żywo</a></li>
-<!--        <li><a href="{{ url_for('settings') }}">Ustawienia</a></li>-->
+        <li><a href="{{ url_for('camera.cam') }}">Podgląd na żywo</a></li>
     </ul>
 </nav>
 
