@@ -4,7 +4,7 @@
 
 {% block content %}
 <h1>Ustawienia</h1>
-<form method="POST" action="{{ url_for('save_settings') }}">
+<form method="POST" action="{{ url_for('settings') }}">
     <div>
         <label for="rtsp_url">RTSP URL:</label>
         <input type="text" id="rtsp_url" name="rtsp_url" value="{{ current_rtsp_url }}">
