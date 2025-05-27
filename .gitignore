@@ -1,0 +1,90 @@
+# -------------------
+# Python
+# -------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+*.db
+*.sqlite3
+
+# -------------------
+# Flask-specific
+# -------------------
+instance/
+*.env
+.env.*
+.env
+
+# -------------------
+# Virtual Environments
+# -------------------
+venv/
+env/
+ENV/
+.venv/
+
+# -------------------
+# Python tools
+# -------------------
+.pytest_cache/
+.tox/
+coverage/
+htmlcov/
+.mypy_cache/
+.dmypy.json
+.pyre/
+*.coverage
+
+# -------------------
+# PyCharm
+# -------------------
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# -------------------
+# VSCode
+# -------------------
+.vscode/
+
+# -------------------
+# Visual Studio (Python Tools for Visual Studio – PTVS)
+# -------------------
+*.vspscc
+*.vssscc
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.pyproj
+*.pyproj.user
+.vs/
+*.ncb
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.VC.opendb
+
+# -------------------
+# System files
+# -------------------
+.DS_Store
+Thumbs.db
+
+# -------------------
+# Temporary files
+# -------------------
+*.bak
+*.swp
+*.swo
+*.~*
+
+# -------------------
+# Cython builds
+# -------------------
+build/
+dist/
+*.egg-info/
