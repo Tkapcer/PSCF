@@ -4,7 +4,6 @@
 
 {% block content %}
 <div class="auth-container">
-    <h2>Logowanie</h2>
     <form method="POST" action="{{ url_for('auth.login') }}" class="auth-form">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -13,15 +12,17 @@
         {% endfor %}
         {% endif %}
         {% endwith %}
-
+        <br>
         <div class="form-group">
             <label for="username">Nazwa użytkownika:</label>
+            <br>
             <input type="text" id="username" name="username" required>
         </div>
         <br>
         <br>
         <div class="form-group">
             <label for="password">Hasło:</label>
+            <br>
             <input type="password" id="password" name="password" required>
         </div>
         <br>

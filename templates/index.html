@@ -3,4 +3,66 @@
 {% block page_title %}Start{% endblock %}
 
 {% block content %}
+<div class="date_time" id="datetime"></div>
+<br>
+<br>
+<br>
+<div class="sensor-values">
+    <div>25.6C</div>
+    <div>34.4 pH</div>
+</div>
+<br>
+<div class="toggles">
+    <div class="toggle-item">
+        <label class="switch">
+            <input type="checkbox">
+            <span class="slider"></span>
+        </label>
+        <div class="toggle-label">Heater</div>
+    </div>
+    <div class="toggle-item">
+        <label class="switch">
+            <input type="checkbox">
+            <span class="slider"></span>
+        </label>
+        <div class="toggle-label">Cooler</div>
+    </div>
+    <div class="toggle-item">
+        <label class="switch">
+            <input type="checkbox">
+            <span class="slider"></span>
+        </label>
+        <div class="toggle-label">Oxygen</div>
+    </div>
+</div>
+
+<br>
+<br>
+<br>
+<script>
+    function updateDateTime() {
+        const now = new Date();
+
+        const dateOptions = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        };
+
+        const timeOptions = {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        };
+
+        const dateStr = now.toLocaleDateString('pl-PL', dateOptions);
+        const timeStr = now.toLocaleTimeString('pl-PL', timeOptions);
+
+        document.getElementById('datetime').innerHTML = dateStr + '<br>' + '<br>' + timeStr;
+    }
+
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+</script>
 {% endblock %}
