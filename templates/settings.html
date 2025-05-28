@@ -1,14 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Ustawienia kamery{% endblock %}
+{% block page_title %}Settings{% endblock %}
 
 {% block content %}
-<h1>Ustawienia</h1>
-<form method="POST" action="{{ url_for('settings') }}">
     <div>
         <label for="rtsp_url">RTSP URL:</label>
         <input type="text" id="rtsp_url" name="rtsp_url" value="{{ current_rtsp_url }}">
     </div>
     <button type="submit">Zapisz</button>
-</form>
 {% endblock %}

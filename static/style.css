@@ -19,4 +19,106 @@ main {
     padding: 2rem;
 }
 
+.comfortaa-sidebar {
+    font-family: "Comfortaa", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 350;
+    font-style: normal;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.logo {
+    height: 200px;
+}
+
+.site-title {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #072364;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.page-title {
+    font-size: 2rem;
+    margin: 0;
+    color: #072364;
+}
+
+
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Comfortaa';
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #072364;
+    color: white;
+    padding: 20px 0;
+    height: 100vh;
+    position: fixed; 
+}
+
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .sidebar li {
+        width: 100%;
+        text-align: center;
+        transition: background-color 0.3s;
+    }
+
+        .sidebar li:hover {
+            background-color: #002886;
+        }
+
+    .sidebar a {
+        display: inline-block;
+        width: 100%;
+        padding: 10px 0;
+    }
+
+.content {
+    margin-left: 200px;
+    padding: 20px;
+    flex: 1;
+    background-color: #ecf0f1;
+}
+
+footer {
+    margin-left: 200px;
+    padding: 10px;
+    background-color: #072364;
+    color: white;
+    text-align: center;
+}
+
 /* Możesz dodać więcej stylów */

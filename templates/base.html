@@ -5,22 +5,35 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     {% block additional_css %}{% endblock %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+
 </head>
 <body>
-<nav>
+<nav class="sidebar">
     <ul>
-        <li><a href="{{ url_for('camera.cam') }}">Podgląd na żywo</a></li>
+        <li><a href="{{ url_for('main.index') }}">Menu</a></li>
+        <li><a href="{{ url_for('main.lights') }}">Lights</a></li>
+        <li><a href="{{ url_for('camera.cam') }}">Camera</a></li>
+        <li><a href="{{ url_for('main.settings') }}">Settings</a></li>
+        <li><a href="{{ url_for('main.profile') }}">Profile</a></li>
     </ul>
 </nav>
 
-<main>
+<main class="content">
+
+    <div class="page-header">
+        <img src="{{ url_for('static', filename='twojebulbul2.png') }}" alt="Logo" class="logo">
+        <h1 class="page-title">{% block page_title %}{% endblock %}</h1>
+    </div>
     {% block content %}
     {% endblock %}
 </main>
 
 <footer>
     {% block footer %}
-    <p>&copy; 2024 System monitoringu</p>
+    <p>&copy; 2024 Aquarium Life Monitoring System</p>
     {% endblock %}
 </footer>
 
