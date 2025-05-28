@@ -94,6 +94,7 @@ body {
         width: 100%;
         text-align: center;
         transition: background-color 0.3s;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     }
 
         .sidebar li:hover {
@@ -121,4 +122,24 @@ footer {
     text-align: center;
 }
 
+.button {
+    background-color: #072364;
+    color: white;
+    padding: 10px 20px;
+    border: 2px solid #002886;
+    border-radius: 6px;
+    cursor: pointer; 
+    font-size: 1rem;
+    text-align: center;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+    .button:hover {
+        background-color: #002886;
+        transform: scale(1.05);
+    }
+
+    .button:active {
+        transform: scale(0.98);
+    }
 /* Możesz dodać więcej stylów */

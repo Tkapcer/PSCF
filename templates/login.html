@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Logowanie{% endblock %}
+{% block page_title %}Logowanie {% endblock %}
 
 {% block content %}
 <div class="auth-container">
@@ -18,13 +18,19 @@
             <label for="username">Nazwa użytkownika:</label>
             <input type="text" id="username" name="username" required>
         </div>
-
+        <br>
+        <br>
         <div class="form-group">
             <label for="password">Hasło:</label>
             <input type="password" id="password" name="password" required>
         </div>
-
-        <button type="submit">Zaloguj się</button>
+        <br>
+        <br>
+        <br>
+        <button class="button" type="submit">Zaloguj się</button>
+        <br>
+        <br>
+        <br>
     </form>
     <p class="auth-links">
         Nie masz konta? <a href="{{ url_for('auth.register') }}">Zarejestruj się</a>
