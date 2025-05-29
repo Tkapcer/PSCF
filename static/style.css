@@ -327,3 +327,144 @@ input:checked + .slider {
     gap: 150px;
     font-size: 20px;
 }
+
+.area-grid {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.area-header {
+    font-weight: bold;
+    grid-column: 1 / span 3;
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+
+.area-row {
+    display: contents;
+}
+
+    .area-row > div {
+        padding: 5px;
+    }
+
+.color-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #ccc;
+    border: 2px solid #ddd;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin: 0 auto;
+    display: block;
+}
+
+    .color-circle:hover {
+        transform: scale(1.1);
+    }
+
+.intensity-slider {
+    width: 100%;
+}
+
+.color-picker {
+    position: absolute;
+    z-index: 1000;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid #ddd;
+}
+
+.color-picker-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+    .color-picker-container input[type="color"] {
+        width: 80px;
+        height: 80px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .color-picker-container button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.2s;
+    }
+
+        .color-picker-container button:first-of-type {
+            background-color: #FF7BD4;
+            color: white;
+        }
+
+            .color-picker-container button:first-of-type:hover {
+                background-color: #FC91D8;
+            }
+
+        .color-picker-container button:last-of-type {
+            background-color: #072364;
+            color: white;
+        }
+
+            .color-picker-container button:last-of-type:hover {
+                background-color: #002886;
+            }
+
+.color-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #cccccc;
+    border: 2px solid #ddd;
+    cursor: pointer;
+    transition: transform 0.2s;
+    display: block;
+    margin: 0 auto;
+}
+
+    .color-circle:hover {
+        transform: scale(1.1);
+    }
+
+.add-button {
+    background-color: #FF7BD4;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 10px 0;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+    .add-button:hover {
+        background-color: #FC91D8;
+    }
+
+.remove-button {
+    background-color: #072364;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-top: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s;
+}
+
+    .remove-button:hover {
+        background-color: #002886;
+    }

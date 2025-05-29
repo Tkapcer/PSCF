@@ -47,20 +47,28 @@
             <button class="circle">Sun</button>
         </div>
         <div class="control-panel">
-            <div class="area-label">
-                <div>Area 1</div>
-                <div>Colour</div>
-                <div>Intensity</div>
+            <div class="area-grid">
+                <div class="area-header">
+                    <div>Area 1</div>
+                    <div>Colour</div>
+                    <div>Intensity</div>
+                </div>
+
+                <div class="area-row">
+                    <div>LED1</div>
+                    <div><button class="color-circle" onclick="showColorPicker(this)"></button></div>
+                    <div><input type="range" min="0" max="100" value="50" class="intensity-slider"></div>
+                </div>
+
+                <div class="area-row">
+                    <div>LED2</div>
+                    <div><button class="color-circle" onclick="showColorPicker(this)"></button></div>
+                    <div><input type="range" min="0" max="100" value="50" class="intensity-slider"></div>
+                </div>
+                <button class="add-button" onclick="addNewArea()">Add Area</button>
             </div>
-            <br>
-            <br>
-            <div> LED1 </div>
-            <br>
-            <div> LED2 </div>
         </div>
-        <br>
-    </div>
-        </div>
+             <button class="add-button" onclick="addNewSchedule()">Add Schedule</button>
  
 <script>
     const buttons = document.querySelectorAll('.circle');
@@ -70,5 +78,59 @@
             button.classList.toggle('active');
         });
     });
+
+    function showColorPicker(button) {
+        document.querySelectorAll('.color-picker').forEach(picker => picker.remove());
+
+        const colorPicker = document.createElement('div');
+        colorPicker.className = 'color-picker';
+        const currentColor = button.style.backgroundColor || '#cccccc';
+
+        colorPicker.innerHTML = `
+        <div class="color-picker-container">
+            <input type="color" id="color-input" value="${rgbToHex(currentColor) || '#cccccc'}">
+            <div class="picker-buttons">
+                <button class="picker-ok">OK</button>
+                <button class="picker-cancel">Cancel</button>
+            </div>
+        </div>
+    `;
+
+        document.body.appendChild(colorPicker);
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.color-picker') && !e.target.classList.contains('color-circle')) {
+                document.querySelectorAll('.color-picker').forEach(picker => picker.remove());
+            }
+        });
+        const rect = button.getBoundingClientRect();
+        colorPicker.style.top = `${rect.bottom + window.scrollY}px`;
+        colorPicker.style.left = `${rect.left + window.scrollX}px`;
+
+        colorPicker.querySelector('.picker-ok').addEventListener('click', () => {
+            const colorInput = colorPicker.querySelector('#color-input');
+            button.style.backgroundColor = colorInput.value;
+            colorPicker.remove();
+        });
+
+        colorPicker.querySelector('.picker-cancel').addEventListener('click', () => {
+            colorPicker.remove();
+        });
+    }
+    function rgbToHex(rgb) {
+        if (!rgb) return null;
+
+        if (rgb.startsWith('#')) return rgb;
+
+        const result = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/.exec(rgb);
+        if (!result) return null;
+
+        const r = parseInt(result[1]);
+        const g = parseInt(result[2]);
+        const b = parseInt(result[3]);
+
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    }
+
+
 </script>     
         {% endblock %}
