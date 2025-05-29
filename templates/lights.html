@@ -4,78 +4,8 @@
 {% block content %}
 <br>
 <div id="schedules-container">
-    <div class="schedule-block">
-        <div class="control-panel">
-            <div class="control-group">
-                <div class="toggle-with-label">
-                    <span class="control-label">Schedule</span>
-                    <label class="switch">
-                        <input type="checkbox" id="schedule-toggle">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-            </div>
-            <br>
-            <br>
-            <br>
-            <div class="time-selection">
-                <div class="label">Time Range</div>
-                <div class="time-inputs">
-                    <span class="time-separator">From</span>
-                    <select class="time-select" id="start-time">
-                        {% for hour in range(24) %}
-                        {% for minute in ['00','15','30','45'] %}
-                        <option value="{{ hour }}:{{ minute }}">{{ "%02d"|format(hour) }}:{{ minute }}</option>
-                        {% endfor %}
-                        {% endfor %}
-                    </select>
-                    <span class="time-separator">to</span>
-                    <select class="time-select" id="end-time">
-                        {% for hour in range(24) %}
-                        {% for minute in ['00','15','30','45'] %}
-                        <option value="{{ hour }}:{{ minute }}">{{ "%02d"|format(hour) }}:{{ minute }}</option>
-                        {% endfor %}
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="label">Repeat</div>
-                <div class="circle-buttons">
-                    <button class="circle">Mon</button>
-                    <button class="circle">Tue</button>
-                    <button class="circle">Wed</button>
-                    <button class="circle">Thu</button>
-                    <button class="circle">Fri</button>
-                    <button class="circle">Sat</button>
-                    <button class="circle">Sun</button>
-                </div>
-                <div class="control-panel">
-                    <div class="area-grid">
-                        <div class="area-header">
-                            <div>Area</div>
-                            <div>Colour</div>
-                            <div>Intensity</div>
-                        </div>
-
-                        <div class="area-row">
-                            <div>LED</div>
-                            <div><button class="color-circle" onclick="showColorPicker(this)"></button></div>
-                            <div><input type="range" min="0" max="100" value="50" class="intensity-slider"></div>
-                            <button class="remove-button" onclick="deleteAreaRow(this)">Delete</button>
-                        </div>
-
-                        <div class="area-row">
-                            <div>LED</div>
-                            <div><button class="color-circle" onclick="showColorPicker(this)"></button></div>
-                            <div><input type="range" min="0" max="100" value="50" class="intensity-slider"></div>
-                            <button class="remove-button" onclick="deleteAreaRow(this)">Delete</button>
-                        </div>
-                        <button class="add-button" onclick="addNewArea(this)">Add Area</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <button class="add-schedule-button" id="add-schedule-btn" onclick="addNewSchedule()">Add Schedule</button>
+    <button class="save-button" onclick="saveAllSchedules()">Save All</button>
 </div>
 
 <script>
@@ -246,5 +176,180 @@
         }
     }
 
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/get_schedules')
+            .then(response => response.json())
+            .then(data => {
+                renderScheduleFromData(data);
+            });
+    });
+
+    function renderScheduleFromData(schedulesData) {
+        const schedulesContainer = document.getElementById('schedules-container');
+        const addButton = document.getElementById('add-schedule-btn');
+
+        while (schedulesContainer.firstChild !== addButton) {
+            schedulesContainer.removeChild(schedulesContainer.firstChild);
+        }
+
+        if (!Array.isArray(schedulesData)) {
+            console.error('Invalid schedules data format:', schedulesData);
+            return;
+        }
+
+        schedulesData.forEach(function (data) {
+            const scheduleBlock = document.createElement('div');
+            scheduleBlock.className = 'schedule-block';
+
+            const repeatButtons = data.repeat_days.map(function (day) {
+                return '<button class="circle active">' + day + '</button>';
+            }).join('');
+
+            const areaRows = data.areas.map(function (area) {
+                return '<div class="area-row">' +
+                    '<div>LED</div>' +
+                    '<div><button class="color-circle" style="background-color:' + area.color + '" onclick="showColorPicker(this)"></button></div>' +
+                    '<div><input type="range" min="0" max="100" value="' + area.intensity + '" class="intensity-slider"></div>' +
+                    '<button class="remove-button" onclick="deleteAreaRow(this)">Delete</button>' +
+                    '</div>';
+            }).join('');
+
+            scheduleBlock.innerHTML =
+                '<div class="control-panel">' +
+                '<div class="control-group">' +
+                '<div class="toggle-with-label">' +
+                '<span class="control-label">Schedule</span>' +
+                '<label class="switch">' +
+                '<input type="checkbox" class="schedule-toggle"' + (data.enabled ? ' checked' : '') + '>' +
+                '<span class="slider"></span>' +
+                '</label>' +
+                '</div>' +
+                '</div>' +
+                '<br><br><br>' +
+                '<div class="time-selection">' +
+                '<div class="label">Time Range</div>' +
+                '<div class="time-inputs">' +
+                '<span class="time-separator">From</span>' +
+                '<select class="time-select">' + generateTimeOptions(data.start_time) + '</select>' +
+                '<span class="time-separator">to</span>' +
+                '<select class="time-select">' + generateTimeOptions(data.end_time) + '</select>' +
+                '</div>' +
+                '<div class="label">Repeat</div>' +
+                '<div class="circle-buttons">' +
+                '<button class="circle">Mon</button>' +
+                '<button class="circle">Tue</button>' +
+                '<button class="circle">Wed</button>' +
+                '<button class="circle">Thu</button>' +
+                '<button class="circle">Fri</button>' +
+                '<button class="circle">Sat</button>' +
+                '<button class="circle">Sun</button>' +
+                '</div>' +
+                '<div class="control-panel">' +
+                '<div class="area-grid">' +
+                '<div class="area-header">' +
+                '<div>Area</div>' +
+                '<div>Colour</div>' +
+                '<div>Intensity</div>' +
+                '</div>' +
+                areaRows +
+                '<button class="add-button" onclick="addNewArea(this)">Add Area</button>' +
+                '</div>' +
+                '</div>' +
+                '<button class="remove-button" onclick="deleteSchedule(this)" style="margin-top: 15px;">Delete Schedule</button>' +
+                '</div>' +
+                '</div>';
+
+            schedulesContainer.insertBefore(scheduleBlock, addButton);
+
+            const dayButtons = scheduleBlock.querySelectorAll('.circle-buttons .circle');
+            dayButtons.forEach(button => {
+                if (data.repeat_days.includes(button.textContent)) {
+                    button.classList.add('active');
+                }
+                button.addEventListener('click', () => {
+                    button.classList.toggle('active');
+                });
+            });
+        });
+    }
+
+
+    function generateTimeOptions(selectedTime) {
+        const options = [];
+        for (let h = 0; h < 24; h++) {
+            for (let m of ['00', '15', '30', '45']) {
+                const value = h + ':' + m;
+                const label = (h < 10 ? '0' + h : h) + ':' + m;
+                const selected = (value === selectedTime) ? ' selected' : '';
+                options.push('<option value="' + value + '"' + selected + '>' + label + '</option>');
+            }
+        }
+        return options.join('');
+    }
+
+    function saveAllSchedules() {
+        const schedules = [];
+
+        document.querySelectorAll('.schedule-block').forEach(scheduleBlock => {
+            const schedule = {
+                start_time: scheduleBlock.querySelector('.time-select').value,
+                end_time: scheduleBlock.querySelectorAll('.time-select')[1].value,
+                enabled: scheduleBlock.querySelector('.schedule-toggle').checked,
+                repeat_days: Array.from(scheduleBlock.querySelectorAll('.circle.active'))
+                    .map(btn => btn.textContent.trim()),
+                areas: []
+            };
+
+            scheduleBlock.querySelectorAll('.area-row').forEach(row => {
+                schedule.areas.push({
+                    color: row.querySelector('.color-circle').style.backgroundColor || '#cccccc',
+                    intensity: row.querySelector('.intensity-slider').value
+                });
+            });
+
+            schedules.push(schedule);
+        });
+
+        fetch('/save_schedules', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ schedules })
+        })
+            .then(response => response.json())
+            .then(data => console.log('Success:', data))
+            .catch(error => console.error('Error:', error));
+    }
+
+    function reloadSchedules() {
+        const container = document.getElementById('schedules-container');
+
+        while (container.children.length > 1) {
+            container.removeChild(container.lastChild);
+        }
+
+        fetch('/get_schedules')
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                if (!Array.isArray(data)) {
+                    throw new Error('Invalid data format received');
+                }
+                data.forEach(scheduleData => {
+                    try {
+                        renderScheduleFromData(scheduleData);
+                    } catch (error) {
+                        console.error('Error rendering schedule:', error);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading schedules:', error);
+                showSaveMessage("Error loading schedules. Please refresh the page.", true);
+            });
+    }
 </script>
         {% endblock %}

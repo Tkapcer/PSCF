@@ -2,8 +2,12 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from app.models.user import User
 from app import db
+from app.models.schedule import Schedule
+from app.models.area import Area
+from flask import jsonify
 
 auth = Blueprint('auth', __name__)
+bp = Blueprint('schedule', __name__)
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -56,3 +60,72 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for('auth.login'))
+
+
+
+@bp.route('/save_schedules', methods=['POST'])
+def save_schedules():
+    try:
+        if not request.is_json:
+            return jsonify({"error": "Request must be JSON"}), 400
+            
+        data = request.get_json()
+        if 'schedules' not in data:
+            return jsonify({"error": "Missing schedules key"}), 400
+            
+        db.session.begin()
+        
+        Area.query.delete()
+        Schedule.query.delete()
+        
+        for sched in data['schedules']:
+            if not all(k in sched for k in ['start_time', 'end_time', 'repeat_days', 'enabled', 'areas']):
+                db.session.rollback()
+                return jsonify({"error": "Invalid schedule format"}), 400
+                
+            schedule = Schedule(
+                start_time=sched['start_time'],
+                end_time=sched['end_time'],
+                repeat_days=','.join(sched['repeat_days']),
+                enabled=sched['enabled']
+            )
+            db.session.add(schedule)
+            db.session.flush()
+            
+            for area in sched['areas']:
+                if not all(k in area for k in ['color', 'intensity']):
+                    db.session.rollback()
+                    return jsonify({"error": "Invalid area format"}), 400
+                    
+                a = Area(
+                    schedule_id=schedule.id,
+                    color=area['color'],
+                    intensity=area['intensity']
+                )
+                db.session.add(a)
+        
+        db.session.commit()
+        return jsonify({"status": "ok", "saved": len(data['schedules'])}), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+@bp.route('/get_schedules', methods=['GET'])
+def get_schedules():
+    schedules = Schedule.query.options(db.joinedload(Schedule.areas)).all()
+    
+    result = []
+    for sched in schedules:
+        result.append({
+            'start_time': str(sched.start_time),
+            'end_time': str(sched.end_time),
+            'repeat_days': sched.repeat_days.split(','),
+            'enabled': bool(sched.enabled),
+            'areas': [{
+                'color': area.color,
+                'intensity': int(area.intensity)
+            } for area in sched.areas]
+        })
+    
+    return jsonify(result)

@@ -476,6 +476,29 @@ input:checked + .slider {
     width: auto;
 }
 
+    .add-schedule-button:hover {
+        background-color: #C95BA7;
+    }
+
+.save-button {
+    background-color: #6AD5FC;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    display: block;
+    margin: 20px auto;
+    max-width: 200px;
+    width: auto;
+}
+
+    .save-button:hover {
+        background-color: #55AAC9;
+    }
+
 .cameras-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(720px, 1fr));

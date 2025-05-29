@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-
 from config import Config
 from flask_migrate import Migrate
 
@@ -25,6 +24,7 @@ def create_app():
         db.create_all()
 
     from app.auth.routes import auth
+    from app.auth.routes import bp as schedule_bp
     from app.camera.routes import camera
     from app.main.routes import main
     from app.settings.routes import settings
@@ -33,5 +33,6 @@ def create_app():
     app.register_blueprint(camera)
     app.register_blueprint(main)
     app.register_blueprint(settings)
+    app.register_blueprint(schedule_bp)
 
     return app
