@@ -245,15 +245,6 @@
             scheduleBlock.remove();
         }
     }
-    window.addEventListener('DOMContentLoaded', () => {
-        const controlPanel = document.querySelector('.control-panel');
-        const addButton = document.querySelector('.add-schedule-button');
-
-        if (controlPanel && addButton) {
-            const leftOffset = controlPanel.getBoundingClientRect().left;
-            addButton.style.marginLeft = `${leftOffset}px`;
-        }
-    });
 
 </script>
         {% endblock %}

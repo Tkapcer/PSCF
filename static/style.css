@@ -470,6 +470,8 @@ input:checked + .slider {
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.3s;
-    margin: 30px auto;
-    max-width: 600px;
+    display: block;
+    margin: 20px auto;
+    max-width: 200px;
+    width: auto;
 }
