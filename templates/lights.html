@@ -2,4 +2,73 @@
 {% block page_title %}Lights{% endblock %}
 
 {% block content %}
-{% endblock %}
+<br>
+<div class="control-panel">
+    <div class="control-group">
+        <div class="toggle-with-label">
+            <span class="control-label">Schedule</span>
+            <label class="switch">
+                <input type="checkbox" id="schedule-toggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div class="time-selection">
+        <div class="label">Time Range</div>
+        <div class="time-inputs">
+            <span class="time-separator">From</span>
+            <select class="time-select" id="start-time">
+                {% for hour in range(24) %}
+                {% for minute in ['00','15','30','45'] %}
+                <option value="{{ hour }}:{{ minute }}">{{ "%02d"|format(hour) }}:{{ minute }}</option>
+                {% endfor %}
+                {% endfor %}
+            </select>
+            <span class="time-separator">to</span>
+            <select class="time-select" id="end-time">
+                {% for hour in range(24) %}
+                {% for minute in ['00','15','30','45'] %}
+                <option value="{{ hour }}:{{ minute }}">{{ "%02d"|format(hour) }}:{{ minute }}</option>
+                {% endfor %}
+                {% endfor %}
+            </select>
+        </div>
+        <div class="label">Repeat</div>
+        <div class="circle-buttons">
+            <button class="circle">Mon</button>
+            <button class="circle">Tue</button>
+            <button class="circle">Wed</button>
+            <button class="circle">Thu</button>
+            <button class="circle">Fri</button>
+            <button class="circle">Sat</button>
+            <button class="circle">Sun</button>
+        </div>
+        <div class="control-panel">
+            <div class="area-label">
+                <div>Area 1</div>
+                <div>Colour</div>
+                <div>Intensity</div>
+            </div>
+            <br>
+            <br>
+            <div> LED1 </div>
+            <br>
+            <div> LED2 </div>
+        </div>
+        <br>
+    </div>
+        </div>
+ 
+<script>
+    const buttons = document.querySelectorAll('.circle');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            button.classList.toggle('active');
+        });
+    });
+</script>     
+        {% endblock %}
