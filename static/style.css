@@ -321,13 +321,6 @@ input:checked + .slider {
         background-color: #FF7BD4;
     }
 
-.area-label {
-    display: flex;
-    justify-content:left;
-    gap: 150px;
-    font-size: 20px;
-}
-
 .area-grid {
     display: grid;
     grid-template-columns: auto auto auto;
@@ -337,7 +330,7 @@ input:checked + .slider {
 
 .area-header {
     font-weight: bold;
-    grid-column: 1 / span 3;
+    grid-column: 1 / span 4;
     display: grid;
     grid-template-columns: auto auto auto;
 }
@@ -468,3 +461,15 @@ input:checked + .slider {
     .remove-button:hover {
         background-color: #002886;
     }
+.add-schedule-button {
+    background-color: #FF7BD4;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    margin: 30px auto;
+    max-width: 600px;
+}

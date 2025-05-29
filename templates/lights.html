@@ -3,73 +3,81 @@
 
 {% block content %}
 <br>
-<div class="control-panel">
-    <div class="control-group">
-        <div class="toggle-with-label">
-            <span class="control-label">Schedule</span>
-            <label class="switch">
-                <input type="checkbox" id="schedule-toggle">
-                <span class="slider"></span>
-            </label>
-        </div>
-    </div>
-    <br>
-    <br>
-    <br>
-    <div class="time-selection">
-        <div class="label">Time Range</div>
-        <div class="time-inputs">
-            <span class="time-separator">From</span>
-            <select class="time-select" id="start-time">
-                {% for hour in range(24) %}
-                {% for minute in ['00','15','30','45'] %}
-                <option value="{{ hour }}:{{ minute }}">{{ "%02d"|format(hour) }}:{{ minute }}</option>
-                {% endfor %}
-                {% endfor %}
-            </select>
-            <span class="time-separator">to</span>
-            <select class="time-select" id="end-time">
-                {% for hour in range(24) %}
-                {% for minute in ['00','15','30','45'] %}
-                <option value="{{ hour }}:{{ minute }}">{{ "%02d"|format(hour) }}:{{ minute }}</option>
-                {% endfor %}
-                {% endfor %}
-            </select>
-        </div>
-        <div class="label">Repeat</div>
-        <div class="circle-buttons">
-            <button class="circle">Mon</button>
-            <button class="circle">Tue</button>
-            <button class="circle">Wed</button>
-            <button class="circle">Thu</button>
-            <button class="circle">Fri</button>
-            <button class="circle">Sat</button>
-            <button class="circle">Sun</button>
-        </div>
+<div id="schedules-container">
+    <div class="schedule-block">
         <div class="control-panel">
-            <div class="area-grid">
-                <div class="area-header">
-                    <div>Area 1</div>
-                    <div>Colour</div>
-                    <div>Intensity</div>
+            <div class="control-group">
+                <div class="toggle-with-label">
+                    <span class="control-label">Schedule</span>
+                    <label class="switch">
+                        <input type="checkbox" id="schedule-toggle">
+                        <span class="slider"></span>
+                    </label>
                 </div>
+            </div>
+            <br>
+            <br>
+            <br>
+            <div class="time-selection">
+                <div class="label">Time Range</div>
+                <div class="time-inputs">
+                    <span class="time-separator">From</span>
+                    <select class="time-select" id="start-time">
+                        {% for hour in range(24) %}
+                        {% for minute in ['00','15','30','45'] %}
+                        <option value="{{ hour }}:{{ minute }}">{{ "%02d"|format(hour) }}:{{ minute }}</option>
+                        {% endfor %}
+                        {% endfor %}
+                    </select>
+                    <span class="time-separator">to</span>
+                    <select class="time-select" id="end-time">
+                        {% for hour in range(24) %}
+                        {% for minute in ['00','15','30','45'] %}
+                        <option value="{{ hour }}:{{ minute }}">{{ "%02d"|format(hour) }}:{{ minute }}</option>
+                        {% endfor %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="label">Repeat</div>
+                <div class="circle-buttons">
+                    <button class="circle">Mon</button>
+                    <button class="circle">Tue</button>
+                    <button class="circle">Wed</button>
+                    <button class="circle">Thu</button>
+                    <button class="circle">Fri</button>
+                    <button class="circle">Sat</button>
+                    <button class="circle">Sun</button>
+                </div>
+                <div class="control-panel">
+                    <div class="area-grid">
+                        <div class="area-header">
+                            <div>Area</div>
+                            <div>Colour</div>
+                            <div>Intensity</div>
+                        </div>
 
-                <div class="area-row">
-                    <div>LED1</div>
-                    <div><button class="color-circle" onclick="showColorPicker(this)"></button></div>
-                    <div><input type="range" min="0" max="100" value="50" class="intensity-slider"></div>
-                </div>
+                        <div class="area-row">
+                            <div>LED</div>
+                            <div><button class="color-circle" onclick="showColorPicker(this)"></button></div>
+                            <div><input type="range" min="0" max="100" value="50" class="intensity-slider"></div>
+                            <button class="remove-button" onclick="deleteAreaRow(this)">Delete</button>
+                        </div>
 
-                <div class="area-row">
-                    <div>LED2</div>
-                    <div><button class="color-circle" onclick="showColorPicker(this)"></button></div>
-                    <div><input type="range" min="0" max="100" value="50" class="intensity-slider"></div>
+                        <div class="area-row">
+                            <div>LED</div>
+                            <div><button class="color-circle" onclick="showColorPicker(this)"></button></div>
+                            <div><input type="range" min="0" max="100" value="50" class="intensity-slider"></div>
+                            <button class="remove-button" onclick="deleteAreaRow(this)">Delete</button>
+                        </div>
+                        <button class="add-button" onclick="addNewArea(this)">Add Area</button>
+                    </div>
                 </div>
-                <button class="add-button" onclick="addNewArea()">Add Area</button>
             </div>
         </div>
-             <button class="add-button" onclick="addNewSchedule()">Add Schedule</button>
- 
+    </div>
+    <button class="add-schedule-button" id="add-schedule-btn" onclick="addNewSchedule()">Add Schedule</button>
+</div>
+
 <script>
     const buttons = document.querySelectorAll('.circle');
 
@@ -87,14 +95,14 @@
         const currentColor = button.style.backgroundColor || '#cccccc';
 
         colorPicker.innerHTML = `
-        <div class="color-picker-container">
-            <input type="color" id="color-input" value="${rgbToHex(currentColor) || '#cccccc'}">
-            <div class="picker-buttons">
-                <button class="picker-ok">OK</button>
-                <button class="picker-cancel">Cancel</button>
-            </div>
-        </div>
-    `;
+                <div class="color-picker-container">
+                    <input type="color" id="color-input" value="${rgbToHex(currentColor) || '#cccccc'}">
+                    <div class="picker-buttons">
+                        <button class="picker-ok">OK</button>
+                        <button class="picker-cancel">Cancel</button>
+                    </div>
+                </div>
+            `;
 
         document.body.appendChild(colorPicker);
         document.addEventListener('click', (e) => {
@@ -130,7 +138,122 @@
 
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     }
+    function addNewArea(button) {
+        const areaGrid = button.closest('.area-grid');
+
+        const newRow = document.createElement('div');
+        newRow.className = 'area-row';
+        newRow.innerHTML = `
+                <div>LED</div>
+                <div><button class="color-circle" onclick="showColorPicker(this)"></button></div>
+                <div><input type="range" min="0" max="100" value="50" class="intensity-slider"></div>
+                <button class="remove-button" onclick="deleteAreaRow(this)">Delete</button>
+            `;
+
+        const addButton = areaGrid.querySelector('.add-button');
+        areaGrid.insertBefore(newRow, addButton);
+    }
+
+    function deleteAreaRow(button) {
+        const row = button.closest('.area-row');
+        if (row) row.remove();
+    }
+    function addNewSchedule() {
+        const schedulesContainer = document.getElementById('schedules-container');
+
+        const newSchedule = document.createElement('div');
+        newSchedule.className = 'schedule-block';
+
+        newSchedule.innerHTML = `
+        <div class="control-panel">
+            <div class="control-group">
+                <div class="toggle-with-label">
+                    <span class="control-label">Schedule</span>
+                    <label class="switch">
+                        <input type="checkbox" class="schedule-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            <br><br><br>
+            <div class="time-selection">
+                <div class="label">Time Range</div>
+                <div class="time-inputs">
+                    <span class="time-separator">From</span>
+                    <select class="time-select">
+                        {% for hour in range(24) %}
+                        {% for minute in ['00','15','30','45'] %}
+                        <option value="{{ hour }}:{{ minute }}">{{ "%02d"|format(hour) }}:{{ minute }}</option>
+                        {% endfor %}
+                        {% endfor %}
+                    </select>
+                    <span class="time-separator">to</span>
+                    <select class="time-select">
+                        {% for hour in range(24) %}
+                        {% for minute in ['00','15','30','45'] %}
+                        <option value="{{ hour }}:{{ minute }}">{{ "%02d"|format(hour) }}:{{ minute }}</option>
+                        {% endfor %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="label">Repeat</div>
+                <div class="circle-buttons">
+                    <button class="circle">Mon</button>
+                    <button class="circle">Tue</button>
+                    <button class="circle">Wed</button>
+                    <button class="circle">Thu</button>
+                    <button class="circle">Fri</button>
+                    <button class="circle">Sat</button>
+                    <button class="circle">Sun</button>
+                </div>
+                <div class="control-panel">
+                    <div class="area-grid">
+                        <div class="area-header">
+                            <div>Area</div>
+                            <div>Colour</div>
+                            <div>Intensity</div>
+                        </div>
+                        <div class="area-row">
+                            <div>LED</div>
+                            <div><button class="color-circle" onclick="showColorPicker(this)"></button></div>
+                            <div><input type="range" min="0" max="100" value="50" class="intensity-slider"></div>
+                            <button class="remove-button" onclick="deleteAreaRow(this)">Delete</button>
+                        </div>
+                        <button class="add-button" onclick="addNewArea(this)">Add Area</button>
+                    </div>
+                </div>
+                <button class="remove-button" onclick="deleteSchedule(this)" style="margin-top: 15px;">Delete Schedule</button>
+            </div>
+        </div>
+    `;
+
+        const addButton = document.getElementById('add-schedule-btn');
+        schedulesContainer.insertBefore(newSchedule, addButton);
 
 
-</script>     
+        const newButtons = newSchedule.querySelectorAll('.circle');
+        newButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                button.classList.toggle('active');
+            });
+        });
+    }
+
+    function deleteSchedule(button) {
+        const scheduleBlock = button.closest('.schedule-block');
+        if (scheduleBlock) {
+            scheduleBlock.remove();
+        }
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+        const controlPanel = document.querySelector('.control-panel');
+        const addButton = document.querySelector('.add-schedule-button');
+
+        if (controlPanel && addButton) {
+            const leftOffset = controlPanel.getBoundingClientRect().left;
+            addButton.style.marginLeft = `${leftOffset}px`;
+        }
+    });
+
+</script>
         {% endblock %}
