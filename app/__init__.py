@@ -17,11 +17,13 @@ def create_app():
     login_manager.login_message = 'Zaloguj się, aby uzyskać dostęp do tej strony.'
 
     from app.auth.routes import auth
+    from app.auth.routes import bp as schedule_bp
     from app.camera.routes import camera
     from app.main.routes import main
 
     app.register_blueprint(auth)
     app.register_blueprint(camera)
     app.register_blueprint(main)
+    app.register_blueprint(schedule_bp)
 
     return app
