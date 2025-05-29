@@ -19,7 +19,7 @@ def lights():
 def profile():
     return render_template('profile.html')
 
-@main.route('/settings')
-@login_required
-def settings():
-    return render_template('settings.html')
+# @main.route('/settings')
+# @login_required
+# def settings():
+#     return render_template('settings.html')

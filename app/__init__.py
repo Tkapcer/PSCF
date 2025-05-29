@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+
 from config import Config
 from flask_migrate import Migrate
 
@@ -26,9 +27,11 @@ def create_app():
     from app.auth.routes import auth
     from app.camera.routes import camera
     from app.main.routes import main
+    from app.settings.routes import settings
 
     app.register_blueprint(auth)
     app.register_blueprint(camera)
     app.register_blueprint(main)
+    app.register_blueprint(settings)
 
     return app

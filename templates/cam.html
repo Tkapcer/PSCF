@@ -1,7 +1,27 @@
 {% extends "base.html" %}
 
-{% block page_title %}Podgląd kamery IP{% endblock %}
+{% block page_title %}Camera View{% endblock %}
 
 {% block content %}
-<img src="{{ url_for('camera.video_feed') }}" width="720" />
+<div class="cameras-container">
+    {% if cameras %}
+    {% for camera in cameras %}
+    <div class="camera-view">
+        <h3>{{ camera.name }}</h3>
+        <div class="camera-stream">
+            <img class="no-signal" src="{{ url_for('static', filename='no-signal.png') }}" alt="No Signal">
+            <img class="camera-feed"
+                 src="{{ url_for('camera.video_feed', camera_id=camera.id) }}"
+                 alt="{{ camera.name }}"
+                 onerror="this.style.display='none'" />
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="control-panel">
+        <p>No cameras available. Please add cameras in the settings.</p>
+        <a href="{{ url_for('settings.settings_page') }}" class="button">Add Camera</a>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}

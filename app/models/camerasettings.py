@@ -8,3 +8,7 @@ class CameraSettings(db.Model):
     @staticmethod
     def get_settings():
         return CameraSettings.query.first()
+
+    @classmethod
+    def get_all_cameras(cls):
+        return cls.query.all()
