@@ -20,6 +20,7 @@
     {% else %}
     <div class="control-panel">
         <p>No cameras available. Please add cameras in the settings.</p>
+        <br>
         <a href="{{ url_for('settings.settings_page') }}" class="button">Add Camera</a>
     </div>
     {% endif %}

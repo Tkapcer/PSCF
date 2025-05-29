@@ -2,7 +2,7 @@
 
 {% block title %}Camera Settings{% endblock %}
 
-{% block page_title %}Camera Settings{% endblock %}
+{% block page_title %}Settings{% endblock %}
 
 {% block content %}
 <div class="control-panel">
@@ -13,21 +13,23 @@
     {% endfor %}
     {% endif %}
     {% endwith %}
-
-    <div class="control-group">
-        <h3>Add New Camera</h3>
-        <form method="POST" action="{{ url_for('settings.settings_page') }}">
-            <div class="form-group">
-                <label for="camera_name" class="label">Camera Name:</label>
-                <input type="text" class="form-control" id="camera_name" name="camera_name"
-                       value="{{ settings.camera_name if settings else '' }}" required>
-                <br>
-                <label for="camera_url" class="label">Camera URL:</label>
-                <input type="text" class="form-control" id="camera_url" name="camera_url"
-                       value="{{ settings.camera_url if settings else '' }}" required>
-            </div>
-            <button type="submit" class="add-button">Add Camera</button>
-        </form>
+    <h2>Camera</h2>
+    <h3>Add New Camera</h3>
+    <div class="camera-form-container">
+        <div class="control-group">
+            <form method="POST" action="{{ url_for('settings.settings_page') }}">
+                <div class="form-group">
+                    <label for="camera_name" class="label">Camera Name:</label>
+                    <input type="text" class="form-control" id="camera_name" name="camera_name"
+                           value="{{ settings.camera_name if settings else '' }}" required>
+                    <br>
+                    <label for="camera_url" class="label">Camera URL:</label>
+                    <input type="text" class="form-control" id="camera_url" name="camera_url"
+                           value="{{ settings.camera_url if settings else '' }}" required>
+                </div>
+                <button type="submit" class="add-schedule-button">Add Camera</button>
+            </form>
+        </div>
     </div>
 
     <div class="control-group">
@@ -51,5 +53,55 @@
             {% endfor %}
         </div>
     </div>
+    <br>
+    <br>
+    <h2>Temperature</h2>
+    <div class="temp-select-wrapper">
+        <select class="temp-select">
+            {% for temperature in range(15, 35) %}
+            {% for temp_value in range(10) %}
+            <option value="{{ temperature }}.{{ temp_value }}">{{ temperature }}.{{ temp_value }}</option>
+            {% endfor %}
+            {% endfor %}
+        </select>
+    </div>
+    <br>
+    <br>
+    <h2>Notifications</h2>
+    <h4>Customize filter change reminder notifications</h4>
+    <div class="temp-select-wrapper">
+        <select id="date-select" class="temp-select">
+            <option value="week">Every week</option>
+            <option value="2weeks">Every fortnight</option>
+            <option value="month">Every month</option>
+            <option value="2months">Every two months</option>
+            <option value="custom">Custom</option>
+        </select>
+    </div>
+    <div id="custom-date" class="date-select">
+        <div class="date-content">
+            <h3>Customize date</h3>
+            <span>Every</span>
+            <select class="temp-select">
+                {% for date in range(1, 366) %}
+                <option value="{{ date }}">{{ date }}</option>
+                {% endfor %}
+            </select>
+            <span id="day-label">days</span>
+            <button class="save-button">Save</button>
+        </div>
+    </div>
+
 </div>
-{% endblock %}
+<script>
+    document.getElementById('date-select').addEventListener('change', function () {
+        const customDateDiv = document.getElementById('custom-date');
+        if (this.value === 'custom') {
+            customDateDiv.style.display = 'block';
+        } else {
+            customDateDiv.style.display = 'none';
+        }
+    });
+
+</script>
+    {% endblock %}

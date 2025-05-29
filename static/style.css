@@ -546,3 +546,27 @@ input:checked + .slider {
 .camera-stream .camera-feed {
     z-index: 2;
 }
+
+.camera-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.temp-select-wrapper{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.temp-select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+
+}
+#custom-date {
+    display: none;
+}
+
