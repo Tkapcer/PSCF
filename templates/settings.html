@@ -1,14 +1,30 @@
 {% extends "base.html" %}
 
-{% block page_title %}Settings{% endblock %}
+{% block title %}Ustawienia kamery{% endblock %}
+
+{% block page_title %}Ustawienia kamery{% endblock %}
 
 {% block content %}
-    <div>
-        <label for="rtsp_url">RTSP URL:</label>
-        <input type="text" id="rtsp_url" name="rtsp_url" value="{{ current_rtsp_url }}">
-    </div>
-<br>
-<br>
-<br>
-    <button class ="button "type="submit">Zapisz</button>
+<div class="container">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('camera.camera_settings') }}">
+        <div class="form-group">
+            <label for="camera_name">Nazwa kamery:</label>
+            <input type="text" class="form-control" id="camera_name" name="camera_name"
+                   value="{{ settings.camera_name if settings else '' }}" required>
+
+            <label for="camera_url">URL kamery:</label>
+            <input type="text" class="form-control" id="camera_url" name="camera_url"
+                   value="{{ settings.camera_url if settings else '' }}" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Zapisz</button>
+    </form>
+</div>
 {% endblock %}
