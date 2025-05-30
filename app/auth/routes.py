@@ -23,7 +23,7 @@ def login():
             login_user(user)
             next_page = request.args.get('next')
             return redirect(next_page or url_for('main.index'))
-        flash('Nieprawidłowa nazwa użytkownika lub hasło')
+        flash('Wrong username or password')
     
     return render_template('login.html')
 
@@ -38,11 +38,11 @@ def register():
         password = request.form.get('password')
         
         if User.query.filter_by(username=username).first():
-            flash('Ta nazwa użytkownika jest już zajęta')
+            flash('This username is already taken')
             return redirect(url_for('auth.register'))
             
         if User.query.filter_by(email=email).first():
-            flash('Ten email jest już używany')
+            flash('This email is already in use')
             return redirect(url_for('auth.register'))
         
         user = User(username=username, email=email)
@@ -50,7 +50,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         
-        flash('Rejestracja udana! Możesz się teraz zalogować')
+        flash('Registration completed succesfully! You can login now')
         return redirect(url_for('auth.login'))
     
     return render_template('register.html')
