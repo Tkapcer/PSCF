@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
-
 </head>
 <body>
 <nav class="sidebar">
@@ -18,14 +17,27 @@
         <li><a href="{{ url_for('camera.cam') }}">Camera</a></li>
         <li><a href="{{ url_for('settings.settings_page') }}">Settings</a></li>
         <li><a href="{{ url_for('main.profile') }}">Profile</a></li>
+        {% if current_user.is_authenticated %}
+        <li class="logout-item">
+            <a href="{{ url_for('auth.logout') }}" class="logout-link"
+               onclick="return confirm('Czy na pewno chcesz się wylogować?')">
+                Wyloguj
+            </a>
+        </li>
+        {% endif %}
     </ul>
 </nav>
 
 <main class="content">
-
     <div class="page-header">
         <img src="{{ url_for('static', filename='twojebulbul2.png') }}" alt="Logo" class="logo">
         <h1 class="page-title">{% block page_title %}{% endblock %}</h1>
+        {% if current_user.is_authenticated %}
+
+        <div class="user-info">
+            Zalogowany jako: {{ current_user.username }}
+        </div>
+        {% endif %}
     </div>
     {% block content %}
     {% endblock %}
