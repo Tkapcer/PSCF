@@ -40,11 +40,11 @@ def register():
         password = request.form.get('password')
 
         if User.query.filter_by(username=username).first():
-            flash('Ta nazwa użytkownika jest już zajęta')
+            flash('This username is already taken.')
             return redirect(url_for('auth.register'))
 
         if User.query.filter_by(email=email).first():
-            flash('Ten email jest już używany')
+            flash('This email is already taken.')
             return redirect(url_for('auth.register'))
 
         user = User(username=username, email=email)
@@ -52,7 +52,7 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        flash('Rejestracja udana! Możesz się teraz zalogować')
+        flash('Registration successful. You can now log in.')
         return redirect(url_for('auth.login'))
 
     return render_template('register.html')
