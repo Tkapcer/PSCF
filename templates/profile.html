@@ -171,20 +171,20 @@ function saveProfile() {
 
     // Walidacja hasła
     if (profileData.new_password && profileData.new_password !== profileData.confirm_password) {
-        showMessage('Hasła nie są identyczne!', true);
+        showMessage('Passwords are not identical!', true);
         return;
     }
 
     // Walidacja email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (profileData.email && !emailRegex.test(profileData.email)) {
-        showMessage('Nieprawidłowy format adresu email!', true);
+        showMessage('invalid email format!', true);
         return;
     }
 
     // Walidacja username
     if (!profileData.username || profileData.username.trim() === '') {
-        showMessage('Username nie może być pusty!', true);
+        showMessage('Username cannot be empty!', true);
         return;
     }
 
@@ -198,19 +198,19 @@ function saveProfile() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            showMessage(data.message || 'Profil został zaktualizowany pomyślnie!');
+            showMessage(data.message || 'Profile has been modified succesfully!');
             document.getElementById('new-password').value = '';
             document.getElementById('confirm-password').value = '';
 
             // Wyłącz tryb edycji
             toggleEditMode();
         } else {
-            showMessage(data.message || 'Nieznany błąd podczas zapisywania profilu', true);
+            showMessage(data.message || 'Unknown error', true);
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        showMessage('Wystąpił błąd połączenia z serwerem', true);
+        showMessage('There was a problem with connecting to a server', true);
     });
 }
 
@@ -235,12 +235,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 document.getElementById('email').value = data.email || '';
             } else {
-                showMessage('Błąd podczas ładowania danych profilu', true);
+                showMessage('Error during loading profile\'s data', true);
             }
         })
         .catch(error => {
             console.error('Error loading profile:', error);
-            showMessage('Wystąpił błąd podczas ładowania profilu', true);
+            showMessage('Error during loading Your profile', true);
         });
 });
 </script>
