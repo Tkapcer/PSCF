@@ -1,5 +1,175 @@
 {% extends "base.html" %}
-{% block page_title %}Profile {% endblock %}
+{% block page_title %}Profile{% endblock %}
 
 {% block content %}
+<div class="auth-container">
+    <div class="auth-form">
+        <div id="profile-messages"></div>
+
+        <div class="form-group">
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email">
+        </div>
+        <br>
+        <br>
+
+        <div class="password-section">
+            <div class="form-group">
+                <label for="new-password">Nowe hasło:</label>
+                <input type="password" id="new-password" name="new_password">
+            </div>
+            <br>
+            <br>
+
+            <div class="form-group">
+                <label for="confirm-password">Powtórz hasło:</label>
+                <input type="password" id="confirm-password" name="confirm_password">
+            </div>
+            <br>
+            <br>
+        </div>
+
+        <div class="profile-buttons">
+            <button class="button" type="button" onclick="saveProfile()">OK</button>
+            <button class="button button-secondary" type="button" onclick="cancelChanges()">Anuluj</button>
+        </div>
+    </div>
+</div>
+
+<style>
+.password-section {
+    border-top: 1px solid #e9ecef;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+.profile-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.button-secondary {
+    background-color: #6c757d !important;
+}
+
+.button-secondary:hover {
+    background-color: #5a6268 !important;
+}
+
+.alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+@media (max-width: 768px) {
+    .profile-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .profile-buttons .button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+</style>
+
+<script>
+function showMessage(message, isError = false) {
+    const messagesDiv = document.getElementById('profile-messages');
+    const alertClass = isError ? 'alert-error' : 'alert-success';
+    messagesDiv.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
+
+    // Auto-hide success messages after 3 seconds
+    if (!isError) {
+        setTimeout(() => {
+            messagesDiv.innerHTML = '';
+        }, 3000);
+    }
+}
+
+function saveProfile() {
+    const profileData = {
+        email: document.getElementById('email').value,
+        new_password: document.getElementById('new-password').value,
+        confirm_password: document.getElementById('confirm-password').value
+    };
+
+    // Walidacja hasła
+    if (profileData.new_password && profileData.new_password !== profileData.confirm_password) {
+        showMessage('Hasła nie są identyczne!', true);
+        return;
+    }
+
+    // Walidacja email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (profileData.email && !emailRegex.test(profileData.email)) {
+        showMessage('Nieprawidłowy format adresu email!', true);
+        return;
+    }
+
+    // Wysłanie danych do serwera
+    fetch('/save_profile', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(profileData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showMessage(data.message || 'Profil został zaktualizowany pomyślnie!');
+            // Wyczyść pola hasła po zapisaniu
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+        } else {
+            showMessage(data.message || 'Nieznany błąd podczas zapisywania profilu', true);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showMessage('Wystąpił błąd połączenia z serwerem', true);
+    });
+}
+
+function cancelChanges() {
+    // Odśwież stronę lub wczytaj dane z serwera
+    location.reload();
+}
+
+// Załaduj dane profilu przy starcie
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/get_profile')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('email').value = data.email || '';
+                // Nie ładujemy haseł ze względów bezpieczeństwa
+            } else {
+                showMessage('Błąd podczas ładowania danych profilu', true);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading profile:', error);
+            showMessage('Wystąpił błąd podczas ładowania profilu', true);
+        });
+});
+</script>
 {% endblock %}
