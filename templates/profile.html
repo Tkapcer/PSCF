@@ -96,7 +96,6 @@ function showMessage(message, isError = false) {
     const alertClass = isError ? 'alert-error' : 'alert-success';
     messagesDiv.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
 
-    // Auto-hide success messages after 3 seconds
     if (!isError) {
         setTimeout(() => {
             messagesDiv.innerHTML = '';
@@ -124,7 +123,6 @@ function saveProfile() {
         return;
     }
 
-    // Wysłanie danych do serwera
     fetch('/save_profile', {
         method: 'POST',
         headers: {
@@ -136,7 +134,6 @@ function saveProfile() {
     .then(data => {
         if (data.success) {
             showMessage(data.message || 'Profil został zaktualizowany pomyślnie!');
-            // Wyczyść pola hasła po zapisaniu
             document.getElementById('new-password').value = '';
             document.getElementById('confirm-password').value = '';
         } else {
@@ -150,18 +147,15 @@ function saveProfile() {
 }
 
 function cancelChanges() {
-    // Odśwież stronę lub wczytaj dane z serwera
     location.reload();
 }
 
-// Załaduj dane profilu przy starcie
 document.addEventListener('DOMContentLoaded', function() {
     fetch('/get_profile')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 document.getElementById('email').value = data.email || '';
-                // Nie ładujemy haseł ze względów bezpieczeństwa
             } else {
                 showMessage('Błąd podczas ładowania danych profilu', true);
             }
