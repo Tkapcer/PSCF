@@ -181,7 +181,7 @@ def save_profile():
             if existing_user:
                 return jsonify({
                     'success': False,
-                    'message': 'Ten email jest już używany przez innego użytkownika'
+                    'message': 'This email is already in use.'
                 }), 400
 
         # Walidacja hasła
@@ -189,19 +189,19 @@ def save_profile():
             if not data.get('confirm_password'):
                 return jsonify({
                     'success': False,
-                    'message': 'Potwierdź nowe hasło'
+                    'message': 'Confirm new password'
                 }), 400
 
             if data['new_password'] != data['confirm_password']:
                 return jsonify({
                     'success': False,
-                    'message': 'Hasła nie są identyczne'
+                    'message': 'Passwords are not identical'
                 }), 400
 
             if len(data['new_password']) < 6:
                 return jsonify({
                     'success': False,
-                    'message': 'Hasło musi mieć co najmniej 6 znaków'
+                    'message': 'The password needs to have at least 6 characters'
                 }), 400
 
         # Aktualizuj dane użytkownika
@@ -215,12 +215,12 @@ def save_profile():
 
         return jsonify({
             'success': True,
-            'message': 'Profil został zaktualizowany pomyślnie'
+            'message': 'Profile has been saved'
         })
 
     except Exception as e:
         db.session.rollback()
         return jsonify({
             'success': False,
-            'message': f'Wystąpił błąd: {str(e)}'
+            'message': f'An error has occured: {str(e)}'
         }), 500

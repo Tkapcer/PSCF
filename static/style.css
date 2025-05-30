@@ -132,6 +132,13 @@ body {
         padding: 10px 0;
     }
 
+.logout-item {
+    position: absolute;
+    bottom: 110px;
+    left: 0;
+    right: 0;
+}
+
 .content {
     margin-left: 200px;
     padding: 20px;

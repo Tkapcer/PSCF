@@ -32,12 +32,6 @@
     <div class="page-header">
         <img src="{{ url_for('static', filename='twojebulbul2.png') }}" alt="Logo" class="logo">
         <h1 class="page-title">{% block page_title %}{% endblock %}</h1>
-        {% if current_user.is_authenticated %}
-
-        <div class="user-info">
-            Zalogowany jako: {{ current_user.username }}
-        </div>
-        {% endif %}
     </div>
     {% block content %}
     {% endblock %}
@@ -45,7 +39,7 @@
 
 <footer>
     {% block footer %}
-    <p>&copy; 2024 Aquarium Life Monitoring System</p>
+    <p>&copy; 2025 Aquarium Life Monitoring System</p>
     {% endblock %}
 </footer>
 

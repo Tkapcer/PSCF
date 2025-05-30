@@ -7,31 +7,43 @@
         <div id="profile-messages"></div>
 
         <div class="form-group">
-            <label for="email">E-mail:</label>
-            <input type="email" id="email" name="email">
+            <label for="username">Username:</label>
+            <br>
+            <input type="text" id="username" name="username" value="{{ current_user.username }}" disabled>
+        </div>
+        <br>
+        <br>
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <br>
+            <input type="email" id="email" name="email" disabled>
         </div>
         <br>
         <br>
 
         <div class="password-section">
             <div class="form-group">
-                <label for="new-password">Nowe hasło:</label>
-                <input type="password" id="new-password" name="new_password">
+                <label for="new-password">New password:</label>
+                <br>
+                <input type="password" id="new-password" name="new_password" disabled>
             </div>
             <br>
             <br>
 
             <div class="form-group">
-                <label for="confirm-password">Powtórz hasło:</label>
-                <input type="password" id="confirm-password" name="confirm_password">
+                <label for="confirm-password">Repeat password:</label>
+                <br>
+                <input type="password" id="confirm-password" name="confirm_password" disabled>
             </div>
             <br>
             <br>
         </div>
 
         <div class="profile-buttons">
-            <button class="button" type="button" onclick="saveProfile()">OK</button>
-            <button class="button button-secondary" type="button" onclick="cancelChanges()">Anuluj</button>
+            <button class="button" id="edit-btn" type="button" onclick="toggleEditMode()">Edit</button>
+            <button class="button" id="save-btn" type="button" onclick="saveProfile()" style="display: none;">OK</button>
+            <button class="button button-secondary" id="cancel-btn" type="button" onclick="cancelChanges()" style="display: none;">Cancel</button>
         </div>
     </div>
 </div>
@@ -77,6 +89,12 @@
     border: 1px solid #f5c6cb;
 }
 
+input:disabled {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
     .profile-buttons {
         flex-direction: column;
@@ -91,6 +109,9 @@
 </style>
 
 <script>
+let isEditMode = false;
+let originalData = {};
+
 function showMessage(message, isError = false) {
     const messagesDiv = document.getElementById('profile-messages');
     const alertClass = isError ? 'alert-error' : 'alert-success';
@@ -103,8 +124,46 @@ function showMessage(message, isError = false) {
     }
 }
 
+function toggleEditMode() {
+    isEditMode = !isEditMode;
+
+    const inputs = ['username', 'email', 'new-password', 'confirm-password'];
+    const editBtn = document.getElementById('edit-btn');
+    const saveBtn = document.getElementById('save-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+
+    if (isEditMode) {
+        // Zapisz oryginalne dane
+        originalData = {
+            username: document.getElementById('username').value,
+            email: document.getElementById('email').value
+        };
+
+        // Włącz pola do edycji
+        inputs.forEach(id => {
+            document.getElementById(id).disabled = false;
+        });
+
+        // Pokaż przyciski OK i Cancel, ukryj Edit
+        editBtn.style.display = 'none';
+        saveBtn.style.display = 'block';
+        cancelBtn.style.display = 'block';
+    } else {
+        // Wyłącz pola edycji
+        inputs.forEach(id => {
+            document.getElementById(id).disabled = true;
+        });
+
+        // Pokaż przycisk Edit, ukryj OK i Cancel
+        editBtn.style.display = 'block';
+        saveBtn.style.display = 'none';
+        cancelBtn.style.display = 'none';
+    }
+}
+
 function saveProfile() {
     const profileData = {
+        username: document.getElementById('username').value,
         email: document.getElementById('email').value,
         new_password: document.getElementById('new-password').value,
         confirm_password: document.getElementById('confirm-password').value
@@ -123,6 +182,12 @@ function saveProfile() {
         return;
     }
 
+    // Walidacja username
+    if (!profileData.username || profileData.username.trim() === '') {
+        showMessage('Username nie może być pusty!', true);
+        return;
+    }
+
     fetch('/save_profile', {
         method: 'POST',
         headers: {
@@ -136,6 +201,9 @@ function saveProfile() {
             showMessage(data.message || 'Profil został zaktualizowany pomyślnie!');
             document.getElementById('new-password').value = '';
             document.getElementById('confirm-password').value = '';
+
+            // Wyłącz tryb edycji
+            toggleEditMode();
         } else {
             showMessage(data.message || 'Nieznany błąd podczas zapisywania profilu', true);
         }
@@ -147,7 +215,17 @@ function saveProfile() {
 }
 
 function cancelChanges() {
-    location.reload();
+    // Przywróć oryginalne wartości
+    document.getElementById('username').value = originalData.username || '';
+    document.getElementById('email').value = originalData.email || '';
+    document.getElementById('new-password').value = '';
+    document.getElementById('confirm-password').value = '';
+
+    // Wyłącz tryb edycji
+    toggleEditMode();
+
+    // Wyczyść komunikaty błędów
+    document.getElementById('profile-messages').innerHTML = '';
 }
 
 document.addEventListener('DOMContentLoaded', function() {

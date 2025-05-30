@@ -17,7 +17,7 @@ def create_app():
     migrate.init_app(app, db)
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
-    login_manager.login_message = 'Zaloguj się, aby uzyskać dostęp do tej strony.'
+    login_manager.login_message = 'Login to get into this website.'
 
     with app.app_context():
         from app.models import CameraSettings
