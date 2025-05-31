@@ -11,6 +11,8 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
     cameras = db.relationship('CameraSettings', backref='user', lazy=True)
+    settings = db.relationship('Settings', backref='user', lazy=True)
+    Schedule = db.relationship('Schedule', backref='user', lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

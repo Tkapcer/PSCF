@@ -7,3 +7,5 @@ class Settings(db.Model):
     custom_days = db.Column(db.Integer)
     last_notification = db.Column(db.DateTime)
     next_notification_date = db.Column(db.DateTime)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)

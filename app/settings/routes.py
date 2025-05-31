@@ -23,7 +23,7 @@ def settings_page():
         flash('New camera has been added successfully.', 'success')
         return redirect(url_for('settings.settings_page'))
 
-    settings_data = Settings.query.first()
+    settings_data = Settings.query.filter_by(user_id=current_user.id).first()
     return render_template('settings.html',
                            cameras=cameras,
                            saved_temperature=settings_data.temperature if settings_data else None,
@@ -75,8 +75,9 @@ from datetime import datetime, timedelta
 def save_temperature():
     temperature = float(request.form['temperature'])
     
-    settings = Settings.query.first() or Settings()
+    settings = Settings.query.filter_by(user_id = current_user.id).first() or Settings()
     settings.temperature = temperature
+    settings.user_id = current_user.id
     db.session.add(settings)
     db.session.commit()
     
@@ -90,9 +91,10 @@ def save_notifications():
     interval = request.form['notification_interval']
     custom_days = int(request.form.get('custom_days', 0)) if interval == 'custom' else None
     
-    settings = Settings.query.first() or Settings()
+    settings = Settings.query.filter_by(user_id = current_user.id).first() or Settings()
     settings.notification_interval = interval
     settings.custom_days = custom_days
+    settings.user_id = current_user.id
     
     if interval == 'week':
         settings.next_notification_date = datetime.utcnow() + timedelta(weeks=1)
@@ -112,7 +114,7 @@ def save_notifications():
 
 def check_notifications():
     now = datetime.utcnow()
-    settings = Settings.query.first()
+    settings = Settings.query.filter_by(user_id = current_user.id).first()
 
     if settings and settings.next_notification_date and Settings.next_notification_date <= now:
        # send_notification()
