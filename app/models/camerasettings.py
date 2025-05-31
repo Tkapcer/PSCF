@@ -7,6 +7,8 @@ class CameraSettings(db.Model):
     brightness = db.Column(db.Integer, default=0)
     contrast = db.Column(db.Float, default=1)
 
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
     @staticmethod
     def get_settings():
         return CameraSettings.query.first()

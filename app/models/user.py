@@ -10,6 +10,8 @@ class User(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
+    cameras = db.relationship('CameraSettings', backref='user', lazy=True)
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 

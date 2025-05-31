@@ -1,6 +1,6 @@
 from calendar import month
-from flask import render_template, request, redirect, url_for, flash
-from flask_login import login_required
+from flask import render_template, request, redirect, url_for, flash, abort
+from flask_login import login_required, current_user
 from win32trace import flush
 
 from app.models import CameraSettings, Settings
@@ -10,14 +10,14 @@ from app import db
 @settings.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings_page():
-    cameras = CameraSettings.get_all_cameras()
+    cameras = CameraSettings.query.filter_by(user_id=current_user.id).all()
 
     if request.method == 'POST':
         camera_url = request.form.get('camera_url')
         camera_name = request.form.get('camera_name')
 
 
-        new_camera = CameraSettings(name=camera_name, url=camera_url)
+        new_camera = CameraSettings(name=camera_name, url=camera_url, user_id=current_user.id)
         db.session.add(new_camera)
         db.session.commit()
         flash('New camera has been added successfully.', 'success')
@@ -44,6 +44,10 @@ def video_settings(camera_id):
         redirect(url_for('settings.settings_page'))
 
     camera = CameraSettings.query.get_or_404(camera_id)
+
+    if camera.user_id != current_user.id:
+        abort(403)
+
     camera.brightness = brightness
     camera.contrast = contrast
 
@@ -55,6 +59,10 @@ def video_settings(camera_id):
 @login_required
 def delete_camera(camera_id):
     camera = CameraSettings.query.get_or_404(camera_id)
+
+    if camera.user_id != current_user.id:
+        abort(403)
+
     db.session.delete(camera)
     db.session.commit()
     flash('Camera has been deleted successfully.', 'success')
