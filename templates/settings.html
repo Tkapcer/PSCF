@@ -56,41 +56,51 @@
     <br>
     <br>
     <h2>Temperature</h2>
-    <div class="temp-select-wrapper">
-        <select class="temp-select">
-            {% for temperature in range(15, 35) %}
-            {% for temp_value in range(10) %}
-            <option value="{{ temperature }}.{{ temp_value }}">{{ temperature }}.{{ temp_value }}</option>
-            {% endfor %}
-            {% endfor %}
-        </select>
-    </div>
+    <form method="POST" action="{{ url_for('settings.save_temperature') }}">
+        <div class="temp-select-wrapper">
+            <select name="temperature" class="temp-select">
+                {% for temperature in range(15, 35) %}
+                {% for temp_value in range(10) %}
+                <option value="{{ temperature }}.{{ temp_value }}"
+                        {% if saved_temperature and saved_temperature == temperature + (temp_value / 10) %}selected{% endif %}>
+                    {{ temperature }}.{{ temp_value }}
+                </option>
+
+                {% endfor %}
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="save-button">Save Temperature</button>
+    </form>
     <br>
     <br>
     <h2>Notifications</h2>
     <h4>Customize filter change reminder notifications</h4>
-    <div class="temp-select-wrapper">
-        <select id="date-select" class="temp-select">
-            <option value="week">Every week</option>
-            <option value="2weeks">Every fortnight</option>
-            <option value="month">Every month</option>
-            <option value="2months">Every two months</option>
-            <option value="custom">Custom</option>
-        </select>
-    </div>
-    <div id="custom-date" class="date-select">
-        <div class="date-content">
-            <h3>Customize date</h3>
-            <span>Every</span>
-            <select class="temp-select">
-                {% for date in range(1, 366) %}
-                <option value="{{ date }}">{{ date }}</option>
-                {% endfor %}
+    <form method="POST" action="{{ url_for('settings.save_notifications') }}">
+        <div class="temp-select-wrapper">
+            <select name="notification_interval" id="date-select" class="temp-select">
+                <option value="week" {% if saved_interval =='week' %}selected{% endif %}>Every week</option>
+                <option value="2weeks" {% if saved_interval =='2weeks' %}selected{% endif %}>Every fortnight</option>
+                <option value="month" {% if saved_interval =='month' %}selected{% endif %}>Every month</option>
+                <option value="2months" {% if saved_interval =='2months' %}selected{% endif %}>Every two months</option>
+                <option value="custom" {% if saved_interval =='custom' %}selected{% endif %}>Custom</option>
             </select>
-            <span id="day-label">days</span>
-            <button class="save-button">Save</button>
         </div>
-    </div>
+        <div id="custom-date" class="date-select">
+            <div class="date-content">
+                <h3>Customize date</h3>
+                <span>Every</span>
+                <select name="custom_days" class="temp-select">
+                    {% for date in range(1, 366) %}
+                    <option value="{{ date }}" {% if saved_custom_days == date %}selected{% endif %}>{{ date }}</option>
+                    {% endfor %}
+                </select>
+                <span id="day-label">days</span>
+                <button class="save-button">Save</button>
+            </div>
+        </div>
+        <button type="submit" class="save-button">Save Notifications</button>
+    </form>
 
 </div>
 <script>

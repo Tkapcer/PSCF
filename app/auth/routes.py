@@ -172,7 +172,6 @@ def save_profile():
         data = request.get_json()
         user = current_user
 
-        # Walidacja email
         if 'email' in data and data['email']:
             existing_user = User.query.filter(
                 User.email == data['email'],
@@ -184,7 +183,6 @@ def save_profile():
                     'message': 'This email is already in use.'
                 }), 400
 
-        # Walidacja hasła
         if data.get('new_password'):
             if not data.get('confirm_password'):
                 return jsonify({
@@ -204,7 +202,6 @@ def save_profile():
                     'message': 'The password needs to have at least 6 characters'
                 }), 400
 
-        # Aktualizuj dane użytkownika
         if 'email' in data and data['email']:
             user.email = data['email']
 

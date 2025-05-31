@@ -20,8 +20,8 @@
         {% if current_user.is_authenticated %}
         <li class="logout-item">
             <a href="{{ url_for('auth.logout') }}" class="logout-link"
-               onclick="return confirm('Czy na pewno chcesz się wylogować?')">
-                Wyloguj
+               onclick="return confirm('Do you really want to logout?')">
+                Logout
             </a>
         </li>
         {% endif %}
