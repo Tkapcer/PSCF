@@ -1,6 +1,8 @@
 from calendar import month
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required
+from win32trace import flush
+
 from app.models import CameraSettings, Settings
 from app.settings import settings
 from app import db
@@ -14,6 +16,7 @@ def settings_page():
         camera_url = request.form.get('camera_url')
         camera_name = request.form.get('camera_name')
 
+
         new_camera = CameraSettings(name=camera_name, url=camera_url)
         db.session.add(new_camera)
         db.session.commit()
@@ -26,6 +29,27 @@ def settings_page():
                            saved_temperature=settings_data.temperature if settings_data else None,
                            saved_interval=settings_data.notification_interval if settings_data else None,
                            saved_custom_days=settings_data.custom_days if settings_data else None)
+
+@settings.route('/video_settings/<int:camera_id>', methods=['POST'])
+@login_required
+def video_settings(camera_id):
+
+    try:
+        brightness = int(request.form.get('brightness'))
+        contrast = float(request.form.get('contrast'))
+    except ValueError:
+        brightness = 0
+        contrast = 0
+        flush("Invalid input for brightness or contrast", "error")
+        redirect(url_for('settings.settings_page'))
+
+    camera = CameraSettings.query.get_or_404(camera_id)
+    camera.brightness = brightness
+    camera.contrast = contrast
+
+    db.session.commit()
+    flash('New video settings of camera has been updated.', 'success')
+    return redirect(url_for('settings.settings_page'))
 
 @settings.route('/settings/delete/<int:camera_id>', methods=['POST'])
 @login_required

@@ -1,6 +1,6 @@
 import cv2
 
-def generate_frames(camera_url):
+def generate_frames(camera_url, brightness, contrast):
     cap = cv2.VideoCapture(camera_url)
 
     success, frame = cap.read()
@@ -12,6 +12,7 @@ def generate_frames(camera_url):
         if not success:
             break
         else:
+            frame = cv2.convertScaleAbs(frame, alpha=contrast, beta=brightness)
             ret, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()
             yield (b'--frame\r\n'

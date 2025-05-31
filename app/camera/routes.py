@@ -15,5 +15,10 @@ def cam():
 @login_required
 def video_feed(camera_id):
     camera = CameraSettings.query.get_or_404(camera_id)
-    return Response(generate_frames(camera.url),
+    return Response(
+        generate_frames(
+            camera.url,
+            brightness=camera.brightness,
+            contrast=camera.contrast
+        ),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
