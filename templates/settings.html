@@ -44,19 +44,29 @@
 
                         <form method="POST" action="{{ url_for('settings.video_settings', camera_id=camera.id) }}">
                             <div class="form-group">
-                                <label for="contrast">Contrast:
-                                    <span id="contrast_value">{{ camera.contrast }}</span>
+                                <label for="contrast_{{ camera.id }}">Contrast:
+                                <span id="contrast_value_{{ camera.id }}">{{ camera.contrast }}</span>
                                 </label><br/>
-                                <input type="range" class="form-control-range" id="contrast" name="contrast"
-                                       min="0" max="3" step="0.1" value="{{ camera.contrast }}" oninput="updateValue('contrast')">
+                                <input type="range"
+                                       id="contrast_{{ camera.id }}"
+                                       name="contrast"
+                                       min="0" max="3" step="0.1"
+                                       value="{{ camera.contrast }}"
+                                       oninput="updateValue(this.id, '{{ camera.id }}')">
                             </div>
                             <div class="form-group">
-                                <label for="brightness">Brightness:
-                                <span id="brightness_value">{{ camera.brightness }}</span>
+                                <label for="brightness_{{ camera.id }}">Brightness:
+                                    <span id="brightness_value_{{ camera.id }}">{{ camera.brightness }}</span>
                                 </label><br/>
-                                <input type="range" class="form-control-range" id="brightness" name="brightness"
-                                       min="-100" max="100" value="{{ camera.brightness }}" oninput="updateValue('brightness')">
+                                <input type="range"
+                                       id="brightness_{{ camera.id }}"
+                                       name="brightness"
+                                       min="-100" max="100"
+                                       value="{{ camera.brightness }}"
+                                       oninput="updateValue(this.id, '{{ camera.id }}')">
                             </div>
+
+
 
                             <button type="submit" class="save-button">
                                 Save Changes
@@ -135,11 +145,21 @@
         }
     });
 
-    function updateValue(id) {
-    const input = document.getElementById(id);
-    const valueDisplay = document.getElementById(id + '_value');
-    valueDisplay.textContent = input.value;
-  }
+function updateValue(inputId, cameraId) {
+        if (inputId.startsWith('contrast_')) {
+            const contrastInput = document.getElementById('contrast_' + cameraId);
+            const contrastValue = document.getElementById('contrast_value_' + cameraId);
+            if (contrastInput && contrastValue) {
+                contrastValue.textContent = contrastInput.value;
+            }
+        } else if (inputId.startsWith('brightness_')) {
+            const brightnessInput = document.getElementById('brightness_' + cameraId);
+            const brightnessValue = document.getElementById('brightness_value_' + cameraId);
+            if (brightnessInput && brightnessValue) {
+                brightnessValue.textContent = brightnessInput.value;
+            }
+        }
+    }
 
 </script>
     {% endblock %}
