@@ -7,16 +7,17 @@ from app.models import CameraSettings, Settings
 from app.settings import settings
 from app import db
 
+
 @settings.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings_page():
-    cameras = CameraSettings.get_all_cameras()
+    cameras = CameraSettings.query.filter_by(user_id=current_user.id).all()
 
     if request.method == 'POST':
         camera_url = request.form.get('camera_url')
         camera_name = request.form.get('camera_name')
 
-        new_camera = CameraSettings(name=camera_name, url=camera_url)
+        new_camera = CameraSettings(name=camera_name, url=camera_url, user_id=current_user.id)
         db.session.add(new_camera)
         db.session.commit()
         flash('New camera has been added successfully.', 'success')
@@ -29,10 +30,10 @@ def settings_page():
                            saved_interval=settings_data.notification_interval if settings_data else None,
                            saved_custom_days=settings_data.custom_days if settings_data else None)
 
+
 @settings.route('/video_settings/<int:camera_id>', methods=['POST'])
 @login_required
 def video_settings(camera_id):
-
     try:
         brightness = int(request.form.get('brightness'))
         contrast = float(request.form.get('contrast'))
@@ -54,6 +55,7 @@ def video_settings(camera_id):
     flash('New video settings of camera has been updated.', 'success')
     return redirect(url_for('settings.settings_page'))
 
+
 @settings.route('/settings/delete/<int:camera_id>', methods=['POST'])
 @login_required
 def delete_camera(camera_id):
@@ -67,34 +69,36 @@ def delete_camera(camera_id):
     flash('Camera has been deleted successfully.', 'success')
     return redirect(url_for('settings.settings_page'))
 
+
 from datetime import datetime, timedelta
+
 
 @settings.route('/save_temperature', methods=['POST'])
 @login_required
 def save_temperature():
     temperature = float(request.form['temperature'])
-    
-    settings = Settings.query.filter_by(user_id = current_user.id).first() or Settings()
+
+    settings = Settings.query.filter_by(user_id=current_user.id).first() or Settings()
     settings.temperature = temperature
     settings.user_id = current_user.id
     db.session.add(settings)
     db.session.commit()
-    
+
     flash('Temperature saved successfully!', 'success')
     return redirect(url_for('settings.settings_page'))
-    
+
 
 @settings.route('/save_notifications', methods=['POST'])
 @login_required
 def save_notifications():
     interval = request.form['notification_interval']
     custom_days = int(request.form.get('custom_days', 0)) if interval == 'custom' else None
-    
-    settings = Settings.query.filter_by(user_id = current_user.id).first() or Settings()
+
+    settings = Settings.query.filter_by(user_id=current_user.id).first() or Settings()
     settings.notification_interval = interval
     settings.custom_days = custom_days
     settings.user_id = current_user.id
-    
+
     if interval == 'week':
         settings.next_notification_date = datetime.utcnow() + timedelta(weeks=1)
     elif interval == '2weeks':
@@ -107,8 +111,7 @@ def save_notifications():
         settings.next_notification_date = datetime.utcnow() + timedelta(days=custom_days)
 
     db.session.add(settings)
-    #settings.next_notification_date = datetime.utcnow() - timedelta(minutes=1)
-
+    # settings.next_notification_date = datetime.utcnow() - timedelta(minutes=1)
     db.session.commit()
     flash('Notification settings saved!', 'success')
     return redirect(url_for('settings.settings_page'))
