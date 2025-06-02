@@ -41,6 +41,38 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ camera.name }}</h5>
                         <p class="card-text">URL: {{ camera.url }}</p>
+
+                        <form method="POST" action="{{ url_for('settings.video_settings', camera_id=camera.id) }}">
+                            <div class="form-group">
+                                <label for="contrast_{{ camera.id }}">Contrast:
+                                <span id="contrast_value_{{ camera.id }}">{{ camera.contrast }}</span>
+                                </label><br/>
+                                <input type="range"
+                                       id="contrast_{{ camera.id }}"
+                                       name="contrast"
+                                       min="0" max="3" step="0.1"
+                                       value="{{ camera.contrast }}"
+                                       oninput="updateValue(this.id, '{{ camera.id }}')">
+                            </div>
+                            <div class="form-group">
+                                <label for="brightness_{{ camera.id }}">Brightness:
+                                    <span id="brightness_value_{{ camera.id }}">{{ camera.brightness }}</span>
+                                </label><br/>
+                                <input type="range"
+                                       id="brightness_{{ camera.id }}"
+                                       name="brightness"
+                                       min="-100" max="100"
+                                       value="{{ camera.brightness }}"
+                                       oninput="updateValue(this.id, '{{ camera.id }}')">
+                            </div>
+
+
+
+                            <button type="submit" class="save-button">
+                                Save Changes
+                            </button>
+                        </form>
+
                         <form method="POST" action="{{ url_for('settings.delete_camera', camera_id=camera.id) }}">
                             <button type="submit" class="remove-button"
                                     onclick="return confirm('Are you sure you want to delete this camera?')">
@@ -111,6 +143,22 @@
             customDateDiv.style.display = 'none';
         }
     });
+
+function updateValue(inputId, cameraId) {
+        if (inputId.startsWith('contrast_')) {
+            const contrastInput = document.getElementById('contrast_' + cameraId);
+            const contrastValue = document.getElementById('contrast_value_' + cameraId);
+            if (contrastInput && contrastValue) {
+                contrastValue.textContent = contrastInput.value;
+            }
+        } else if (inputId.startsWith('brightness_')) {
+            const brightnessInput = document.getElementById('brightness_' + cameraId);
+            const brightnessValue = document.getElementById('brightness_value_' + cameraId);
+            if (brightnessInput && brightnessValue) {
+                brightnessValue.textContent = brightnessInput.value;
+            }
+        }
+    }
 
     document.addEventListener('DOMContentLoaded', function () {
         const select = document.getElementById('date-select');

@@ -89,7 +89,8 @@ def save_schedules():
                 start_time=sched['start_time'],
                 end_time=sched['end_time'],
                 repeat_days=','.join(sched['repeat_days']),
-                enabled=sched['enabled']
+                enabled=sched['enabled'],
+                user_id = current_user.id
             )
             db.session.add(schedule)
             db.session.flush()
@@ -116,7 +117,7 @@ def save_schedules():
 
 @bp.route('/get_schedules', methods=['GET'])
 def get_schedules():
-    schedules = Schedule.query.options(db.joinedload(Schedule.areas)).all()
+    schedules = Schedule.query.filter_by(user_id = current_user.id).options(db.joinedload(Schedule.areas)).all()
 
     result = []
     for sched in schedules:

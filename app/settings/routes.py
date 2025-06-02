@@ -1,6 +1,8 @@
 from calendar import month
-from flask import render_template, request, redirect, url_for, flash
-from flask_login import login_required
+from flask import render_template, request, redirect, url_for, flash, abort
+from flask_login import login_required, current_user
+from win32trace import flush
+
 from app.models import CameraSettings, Settings
 from app.settings import settings
 from app import db
@@ -20,17 +22,46 @@ def settings_page():
         flash('New camera has been added successfully.', 'success')
         return redirect(url_for('settings.settings_page'))
 
-    settings_data = Settings.query.first()
+    settings_data = Settings.query.filter_by(user_id=current_user.id).first()
     return render_template('settings.html',
                            cameras=cameras,
                            saved_temperature=settings_data.temperature if settings_data else None,
                            saved_interval=settings_data.notification_interval if settings_data else None,
                            saved_custom_days=settings_data.custom_days if settings_data else None)
 
+@settings.route('/video_settings/<int:camera_id>', methods=['POST'])
+@login_required
+def video_settings(camera_id):
+
+    try:
+        brightness = int(request.form.get('brightness'))
+        contrast = float(request.form.get('contrast'))
+    except ValueError:
+        brightness = 0
+        contrast = 0
+        flush("Invalid input for brightness or contrast", "error")
+        redirect(url_for('settings.settings_page'))
+
+    camera = CameraSettings.query.get_or_404(camera_id)
+
+    if camera.user_id != current_user.id:
+        abort(403)
+
+    camera.brightness = brightness
+    camera.contrast = contrast
+
+    db.session.commit()
+    flash('New video settings of camera has been updated.', 'success')
+    return redirect(url_for('settings.settings_page'))
+
 @settings.route('/settings/delete/<int:camera_id>', methods=['POST'])
 @login_required
 def delete_camera(camera_id):
     camera = CameraSettings.query.get_or_404(camera_id)
+
+    if camera.user_id != current_user.id:
+        abort(403)
+
     db.session.delete(camera)
     db.session.commit()
     flash('Camera has been deleted successfully.', 'success')
@@ -43,8 +74,9 @@ from datetime import datetime, timedelta
 def save_temperature():
     temperature = float(request.form['temperature'])
     
-    settings = Settings.query.first() or Settings()
+    settings = Settings.query.filter_by(user_id = current_user.id).first() or Settings()
     settings.temperature = temperature
+    settings.user_id = current_user.id
     db.session.add(settings)
     db.session.commit()
     
@@ -58,9 +90,10 @@ def save_notifications():
     interval = request.form['notification_interval']
     custom_days = int(request.form.get('custom_days', 0)) if interval == 'custom' else None
     
-    settings = Settings.query.first() or Settings()
+    settings = Settings.query.filter_by(user_id = current_user.id).first() or Settings()
     settings.notification_interval = interval
     settings.custom_days = custom_days
+    settings.user_id = current_user.id
     
     if interval == 'week':
         settings.next_notification_date = datetime.utcnow() + timedelta(weeks=1)

@@ -9,3 +9,4 @@ class Schedule(db.Model):
     enabled = db.Column(db.Boolean)
 
     areas = db.relationship('Area', backref='schedule', cascade='all, delete-orphan')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
