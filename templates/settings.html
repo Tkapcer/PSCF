@@ -96,7 +96,6 @@
                     {% endfor %}
                 </select>
                 <span id="day-label">days</span>
-                <button class="save-button">Save</button>
             </div>
         </div>
         <button type="submit" class="save-button">Save Notifications</button>
@@ -110,6 +109,13 @@
             customDateDiv.style.display = 'block';
         } else {
             customDateDiv.style.display = 'none';
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const select = document.getElementById('date-select');
+        if (select.value === 'custom') {
+            document.getElementById('custom-date').style.display = 'block';
         }
     });
 

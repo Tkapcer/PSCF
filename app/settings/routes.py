@@ -74,16 +74,8 @@ def save_notifications():
         settings.next_notification_date = datetime.utcnow() + timedelta(days=custom_days)
 
     db.session.add(settings)
+    #settings.next_notification_date = datetime.utcnow() - timedelta(minutes=1)
+
     db.session.commit()
     flash('Notification settings saved!', 'success')
     return redirect(url_for('settings.settings_page'))
-
-def check_notifications():
-    now = datetime.utcnow()
-    settings = Settings.query.first()
-
-    if settings and settings.next_notification_date and Settings.next_notification_date <= now:
-       # send_notification()
-        
-        Settings.next_notification_date = now + timedelta(days=Settings.notification_interval_days)
-        db.session.commit()
